@@ -1,9 +1,9 @@
 import { useFetcher } from "@remix-run/react";
 import { useEffect, useRef } from "react";
-import { clientAction } from "../../route";
+import { TasksActionData } from "../../types";
 
 export default function NewTaskForm() {
-  const fetcher = useFetcher<typeof clientAction>();
+  const fetcher = useFetcher<TasksActionData>();
 
   const formRef = useRef<HTMLFormElement>(null!);
 

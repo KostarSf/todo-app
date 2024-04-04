@@ -1,8 +1,8 @@
-import { ClientActionFunctionArgs, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { MetaFunction } from "@vercel/remix";
-import { ClientTaskManager } from "~/models/client-task-manager";
 import NewTaskForm from "./components/new-task-form/NewTaskForm";
 import TaskItem from "./components/task-item/TaskItem";
+import { TasksLoaderData } from "./types";
 
 export const meta: MetaFunction = () => {
   return [
@@ -11,65 +11,14 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const clientLoader = () => {
-  return new ClientTaskManager().tasks;
-};
-clientLoader.hydrate = true;
-
-export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
-  const formData = await request.formData();
-  const intent = formData.get("intent");
-
-  const taskManager = new ClientTaskManager();
-
-  if (intent === "add-task") {
-    const text = formData.get("text")?.toString().trim();
-
-    if (typeof text !== "string" || !text) {
-      return { error: "Вы не заполнили задачу" };
-    }
-
-    taskManager.addTask(text).save();
-    return {};
-  }
-
-  if (intent === "update-task") {
-    const id = formData.get("id")?.toString();
-    const done = Boolean(formData.get("done"));
-
-    if (typeof id !== "string" || !id) {
-      return { error: "Id задачи должен быть указан" };
-    }
-
-    const error = taskManager.updateTask(id, { done });
-    if (error) {
-      return { error };
-    }
-
-    taskManager.save();
-    return {};
-  }
-
-  if (intent === "delete-task") {
-    const id = formData.get("id")?.toString();
-
-    if (typeof id !== "string" || !id) {
-      return { error: "Id задачи должен быть указан" };
-    }
-
-    taskManager.deleteTask(id).save();
-    return {};
-  }
-
-  return { error: "Неподерживаемое действие" };
-};
+export { clientAction, clientLoader } from "./client";
 
 export function HydrateFallback() {
   return <p>Загрузка...</p>;
 }
 
 export default function Index() {
-  const tasks = useLoaderData<typeof clientLoader>();
+  const tasks = useLoaderData<TasksLoaderData>();
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
