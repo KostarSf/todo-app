@@ -1,8 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
 import { MetaFunction } from "@vercel/remix";
 
-import NewTaskForm from "./components/new-task-form/NewTaskForm";
-import TasksList from "./components/tasks-list/TasksList";
+import { AuthButton, NewTaskForm, TasksList } from "~/widgets";
 import { TasksLoaderData } from "./types";
 
 export const meta: MetaFunction = () => {
@@ -22,10 +21,14 @@ export default function Index() {
   const tasks = useLoaderData<TasksLoaderData>();
 
   return (
-    <div className="flex min-h-svh flex-col">
-      <header></header>
+    <div className="flex min-h-svh flex-col space-y-8">
+      <header className="flex items-center justify-between border-b border-slate-100 bg-white px-4 py-2">
+        <h1 className="select-none font-mono text-2xl font-bold text-indigo-400">Todoerr</h1>
 
-      <main className="mx-auto flex w-full max-w-screen-sm flex-1 flex-col gap-4 p-2 md:justify-center">
+        <AuthButton />
+      </header>
+
+      <main className="mx-auto flex w-full max-w-screen-sm flex-1 flex-col gap-4 px-2 md:justify-center">
         <NewTaskForm />
         <TasksList tasks={tasks} />
       </main>

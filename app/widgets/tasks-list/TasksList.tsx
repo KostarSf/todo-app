@@ -1,11 +1,12 @@
 import { Task } from "@prisma/client";
 import { useFetcher } from "@remix-run/react";
 
-import { INTENTS } from "../../types";
-import TaskItem from "../task-item/TaskItem";
+import { Box } from "~/components";
+import { INTENTS } from "~/routes/_index/types";
+import { TaskItem } from "..";
 
 type TasksListProps = { tasks: Task[] };
-export default function TasksList({ tasks }: TasksListProps) {
+export function TasksList({ tasks }: TasksListProps) {
   const fetcher = useFetcher();
 
   const updateTaskHandle = (task: Task) => {
@@ -25,7 +26,7 @@ export default function TasksList({ tasks }: TasksListProps) {
   };
 
   return tasks.length > 0 ? (
-    <section className="overflow-clip rounded-md bg-white py-2 shadow-lg shadow-slate-200">
+    <Box className="overflow-clip py-2" border>
       <ul>
         {tasks.map((task) => (
           <TaskItem
@@ -36,7 +37,7 @@ export default function TasksList({ tasks }: TasksListProps) {
           />
         ))}
       </ul>
-    </section>
+    </Box>
   ) : (
     <p className="p-3 text-center text-slate-400">Добавьте новую задачу в ваш список дел!</p>
   );
