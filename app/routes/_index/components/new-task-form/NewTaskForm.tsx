@@ -1,5 +1,6 @@
 import { useFetcher } from "@remix-run/react";
 import { useEffect, useRef } from "react";
+
 import { INTENTS, TasksActionData } from "../../types";
 
 export default function NewTaskForm() {

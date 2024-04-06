@@ -1,7 +1,8 @@
 import { Task } from "@prisma/client";
-import TaskItem from "../task-item/TaskItem";
 import { useFetcher } from "@remix-run/react";
+
 import { INTENTS } from "../../types";
+import TaskItem from "../task-item/TaskItem";
 
 type TasksListProps = { tasks: Task[] };
 export default function TasksList({ tasks }: TasksListProps) {

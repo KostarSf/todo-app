@@ -1,4 +1,6 @@
-import { ClientActionFunctionArgs } from "@remix-run/react";
+import { ClientActionFunctionArgs, json } from "@remix-run/react";
+import { TypedResponse } from "@vercel/remix";
+
 import { TasksClientManager } from "~/models/tasks.client-manager";
 import { INTENTS, TasksActionData, TasksLoaderData } from "./types";
 
@@ -9,7 +11,7 @@ clientLoader.hydrate = true;
 
 export const clientAction = async ({
   request,
-}: ClientActionFunctionArgs): Promise<TasksActionData> => {
+}: ClientActionFunctionArgs): Promise<TypedResponse<TasksActionData>> => {
   const formData = await request.formData();
   const intent = formData.get("intent");
 
@@ -19,11 +21,11 @@ export const clientAction = async ({
     const text = formData.get("text")?.toString().trim();
 
     if (typeof text !== "string" || !text) {
-      return { error: "Вы не заполнили поле" };
+      return json({ error: "Вы не заполнили поле" }, { status: 400 });
     }
 
     taskManager.addTask(text).save();
-    return {};
+    return json({});
   }
 
   if (intent === INTENTS.updateTask) {
@@ -33,28 +35,28 @@ export const clientAction = async ({
     const done = formData.get("done") === "true";
 
     if (typeof id !== "string" || !id) {
-      return { error: "Id задачи должен быть указан" };
+      return json({ error: "Id задачи должен быть указан" }, { status: 400 });
     }
 
     const error = taskManager.updateTask(id, { done });
     if (error) {
-      return { error };
+      return json({ error }, { status: 400 });
     }
 
     taskManager.save();
-    return {};
+    return json({});
   }
 
   if (intent === INTENTS.deleteTask) {
     const id = formData.get("id")?.toString();
 
     if (typeof id !== "string" || !id) {
-      return { error: "Id задачи должен быть указан" };
+      return json({ error: "Id задачи должен быть указан" }, { status: 400 });
     }
 
     taskManager.deleteTask(id).save();
-    return {};
+    return json({});
   }
 
-  return { error: "Неподерживаемое действие" };
+  return json({ error: "Неизвестный intent" }, { status: 400 });
 };
