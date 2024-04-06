@@ -1,9 +1,9 @@
 import { ClientActionFunctionArgs } from "@remix-run/react";
-import { ClientTaskManager } from "~/models/client-task-manager";
-import { TasksActionData, TasksLoaderData } from "./types";
+import { TasksClientManager } from "~/models/tasks.client-manager";
+import { INTENTS, TasksActionData, TasksLoaderData } from "./types";
 
 export const clientLoader = (): TasksLoaderData => {
-  return new ClientTaskManager().tasks;
+  return new TasksClientManager().tasks;
 };
 clientLoader.hydrate = true;
 
@@ -13,22 +13,24 @@ export const clientAction = async ({
   const formData = await request.formData();
   const intent = formData.get("intent");
 
-  const taskManager = new ClientTaskManager();
+  const taskManager = new TasksClientManager();
 
-  if (intent === "add-task") {
+  if (intent === INTENTS.createTask) {
     const text = formData.get("text")?.toString().trim();
 
     if (typeof text !== "string" || !text) {
-      return { error: "Вы не заполнили задачу" };
+      return { error: "Вы не заполнили поле" };
     }
 
     taskManager.addTask(text).save();
     return {};
   }
 
-  if (intent === "update-task") {
+  if (intent === INTENTS.updateTask) {
+    Object.fromEntries(formData.entries());
+
     const id = formData.get("id")?.toString();
-    const done = Boolean(formData.get("done"));
+    const done = formData.get("done") === "true";
 
     if (typeof id !== "string" || !id) {
       return { error: "Id задачи должен быть указан" };
@@ -43,7 +45,7 @@ export const clientAction = async ({
     return {};
   }
 
-  if (intent === "delete-task") {
+  if (intent === INTENTS.deleteTask) {
     const id = formData.get("id")?.toString();
 
     if (typeof id !== "string" || !id) {

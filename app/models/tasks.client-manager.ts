@@ -1,6 +1,7 @@
-import { Task, TaskDto } from "./task.model";
+import { Task } from "@prisma/client";
+import { randomUUID } from "~/utils/crypto";
 
-export class ClientTaskManager {
+export class TasksClientManager {
   private static STORAGE_ENTRY = "todos";
 
   tasks: Task[];
@@ -10,13 +11,18 @@ export class ClientTaskManager {
   }
 
   addTask(text: string, done = false) {
-    const ordering = this.tasks.length + 1;
-    this.tasks.push(new Task({ text, done, ordering }));
+    this.tasks.push({
+      id: randomUUID(),
+      text: text,
+      done: done,
+      order: this.tasks.length + 1,
+      accountId: "0",
+    });
 
     return this;
   }
 
-  updateTask(id: Task["id"], { done }: Partial<Omit<TaskDto, "id">>) {
+  updateTask(id: Task["id"], { done }: Partial<Omit<Task, "id" | "accountId">>) {
     const task = this.tasks.find((task) => task.id === id);
     if (!task) {
       return "Задачи не существует";
@@ -32,7 +38,7 @@ export class ClientTaskManager {
   deleteTask(id: Task["id"]) {
     this.tasks = this.tasks.filter((task) => task.id !== id);
     this.tasks = this.tasks.map((task, index) => {
-      task.ordering = index + 1;
+      task.order = index + 1;
       return task;
     });
 
@@ -40,16 +46,16 @@ export class ClientTaskManager {
   }
 
   save() {
-    this.tasks = this.tasks.sort((a, b) => a.ordering - b.ordering);
+    this.tasks = this.tasks.sort((a, b) => a.order - b.order);
 
     const json = JSON.stringify(this.tasks);
-    localStorage.setItem(ClientTaskManager.STORAGE_ENTRY, json);
+    localStorage.setItem(TasksClientManager.STORAGE_ENTRY, json);
 
     return this;
   }
 
   private parseTasksFromJSON(): Task[] {
-    const json = localStorage.getItem(ClientTaskManager.STORAGE_ENTRY);
+    const json = localStorage.getItem(TasksClientManager.STORAGE_ENTRY);
 
     if (!json) {
       return [];
@@ -61,7 +67,9 @@ export class ClientTaskManager {
         return [];
       }
 
-      return data.map((task) => new Task(task));
+      return data.map(({ id, text, done, order, accountId }: Task) => {
+        return { id, text, done, order, accountId };
+      });
     } catch (err) {
       console.error(err);
     }

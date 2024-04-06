@@ -1,7 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
 import { MetaFunction } from "@vercel/remix";
 import NewTaskForm from "./components/new-task-form/NewTaskForm";
-import TaskItem from "./components/task-item/TaskItem";
+import TasksList from "./components/tasks-list/TasksList";
 import { TasksLoaderData } from "./types";
 
 export const meta: MetaFunction = () => {
@@ -26,19 +26,7 @@ export default function Index() {
 
       <main className="mx-auto flex w-full max-w-screen-sm flex-1 flex-col gap-4 p-2 md:justify-center">
         <NewTaskForm />
-
-        {tasks.length > 0 ? (
-          <section className="overflow-clip rounded-md bg-white py-2 shadow-lg shadow-slate-200">
-            <ul>
-              {tasks.map((task) => (
-                <TaskItem key={task.id} task={task} />
-              ))}
-              {tasks.length === 0 && <li></li>}
-            </ul>
-          </section>
-        ) : (
-          <p className="p-3 text-center text-slate-400">Добавьте новую задачу в ваш список дел!</p>
-        )}
+        <TasksList tasks={tasks} />
       </main>
 
       <footer>

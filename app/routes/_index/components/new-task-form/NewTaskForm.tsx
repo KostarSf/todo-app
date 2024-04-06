@@ -1,6 +1,6 @@
 import { useFetcher } from "@remix-run/react";
 import { useEffect, useRef } from "react";
-import { TasksActionData } from "../../types";
+import { INTENTS, TasksActionData } from "../../types";
 
 export default function NewTaskForm() {
   const fetcher = useFetcher<TasksActionData>();
@@ -28,10 +28,10 @@ export default function NewTaskForm() {
         placeholder="Что хотите сделать?"
         autoComplete="off"
       />
-      <input type="hidden" name="intent" value="add-task" />
+      <input type="hidden" name="intent" value={INTENTS.createTask} />
       <input type="submit" hidden />
 
-      {fetcher.data?.error && <p>{fetcher.data.error}</p>}
+      {fetcher.data?.error && <p className="text-sm text-rose-600">{fetcher.data.error}</p>}
     </fetcher.Form>
   );
 }

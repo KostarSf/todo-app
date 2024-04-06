@@ -1,34 +1,19 @@
 import { CheckIcon } from "@heroicons/react/16/solid";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { useFetcher } from "@remix-run/react";
-import { Task } from "~/models/task.model";
+import { Task } from "@prisma/client";
 
-export default function TaskItem({ task }: { task: Task }) {
-  const fetcher = useFetcher();
-
-  const updateTaskDoneState = (done: boolean) => {
-    const formData = new FormData();
-    formData.append("id", task.id);
-    formData.append("done", done ? "1" : "");
-    formData.append("intent", "update-task");
-
-    fetcher.submit(formData, { method: "POST", navigate: false });
-  };
-
-  const deleteTask = () => {
-    const formData = new FormData();
-    formData.append("id", task.id);
-    formData.append("intent", "delete-task");
-
-    fetcher.submit(formData, { method: "POST", navigate: false });
-  };
-
+type TaskItemProps = {
+  task: Task;
+  onUpdate: (task: Task) => void;
+  onDelete: (task: Task) => void;
+};
+export default function TaskItem({ task, onUpdate, onDelete }: TaskItemProps) {
   return (
     <li className="group/item flex items-center gap-4 overflow-clip bg-white px-4 transition hover:bg-slate-50">
       <button
         className="grid h-6 w-6 place-items-center rounded-md border border-slate-300 bg-white transition hover:border-indigo-300"
         type="button"
-        onClick={() => updateTaskDoneState(!task.done)}
+        onClick={() => onUpdate({ ...task, done: !task.done })}
       >
         <CheckIcon
           className={
@@ -47,7 +32,7 @@ export default function TaskItem({ task }: { task: Task }) {
         {task.text}
       </p>
 
-      <button type="button" onClick={deleteTask}>
+      <button type="button" onClick={() => onDelete(task)}>
         <TrashIcon className="w-10 translate-y-5 p-2 text-transparent transition group-hover/item:translate-y-0 group-hover/item:text-slate-400 group-hover/item:hover:text-rose-600" />
       </button>
     </li>
