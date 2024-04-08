@@ -46,6 +46,7 @@ function AuthWindow({ window, onWindowChange, onAuthSuccess }: AuthWindowProps) 
   const fetcher = useFetcher<RegisterActionData>();
 
   const action = window === "login" ? "/api/login" : "/api/register";
+  const isLoading = fetcher.state !== "idle";
 
   useEffect(() => {
     if (fetcher.state === "idle" && fetcher.data?.ok) {
@@ -88,14 +89,20 @@ function AuthWindow({ window, onWindowChange, onAuthSuccess }: AuthWindowProps) 
       </fetcher.Form>
 
       <div className="space-y-2">
-        <Button type="submit" fullWidth form={formId}>
+        <Button type="submit" fullWidth form={formId} loading={isLoading}>
           {window === "login" ? "Войти" : "Зарегистрироваться"}
         </Button>
         {fetcher.data?.error && (
           <p className="text-center text-sm text-rose-500">{fetcher.data.error}</p>
         )}
 
-        <Button fullWidth variant="secondary" size="small" onClick={changeWindowHandle}>
+        <Button
+          fullWidth
+          variant="secondary"
+          size="small"
+          onClick={changeWindowHandle}
+          disabled={isLoading}
+        >
           {window === "login" ? "Регистрация" : "Вход"}
         </Button>
       </div>

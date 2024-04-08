@@ -28,7 +28,7 @@ export const action: ActionFunction = async ({
 
   try {
     const rawTasks = JSON.parse(tasksJson) as Task[];
-    const tasksDtos = rawTasks.map(({ text, done, order }) => ({ text, done, order }));
+    const tasksDtos = rawTasks.map(({ id, text, done, order }) => ({ id, text, done, order }));
 
     await tasks.createMany(user.id, tasksDtos);
   } catch (error) {

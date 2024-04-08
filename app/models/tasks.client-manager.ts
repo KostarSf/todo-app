@@ -11,9 +11,9 @@ export class TasksClientManager {
     this.tasks = this.parseTasksFromJSON();
   }
 
-  addTask(text: string, done = false) {
+  addTask({ id, text, done = false }: { id?: string; text: string; done?: boolean }) {
     this.tasks.push({
-      id: randomUUID(),
+      id: id || randomUUID(),
       text: text,
       done: done,
       order: this.tasks.length + 1,

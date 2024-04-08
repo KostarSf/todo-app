@@ -32,12 +32,13 @@ export const action: ActionFunction = async ({
 
   if (intent === INTENTS.createTask) {
     let text = formData.get("text");
+    const id = formData.get("id")?.toString();
 
     if (typeof text !== "string" || !(text = text.trim())) {
       return json({ error: "Вы не заполнили поле" }, { status: 400 });
     }
 
-    await tasks.create(user.id, { text });
+    await tasks.create(user.id, { id, text });
     return json({});
   }
 

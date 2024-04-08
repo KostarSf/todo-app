@@ -42,7 +42,7 @@ function Layout({ children }: { children?: React.ReactNode }) {
         <AuthButton />
       </header>
 
-      <main className="mx-auto flex w-full max-w-screen-sm flex-1 flex-col gap-4 px-2 md:justify-center">
+      <main className="mx-auto flex w-full max-w-screen-sm flex-1 flex-col gap-4 px-4 md:justify-center">
         {children}
       </main>
 

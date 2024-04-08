@@ -3,21 +3,40 @@ import { Prisma, Task } from "@prisma/client";
 import { prisma } from "~/db.server";
 
 class Tasks {
-  create(accountId: Task["accountId"], taskDto: Omit<Prisma.TaskCreateInput, "account">) {
-    return prisma.task.create({
-      data: {
-        ...taskDto,
-        account: { connect: { id: accountId } },
-      },
+  async create(accountId: Task["accountId"], taskDto: Omit<Prisma.TaskCreateInput, "account">) {
+    return prisma.$transaction(async (prisma) => {
+      const maxOrderAgregation = await prisma.task.aggregate({
+        where: { accountId },
+        _max: { order: true },
+      });
+
+      return prisma.task.create({
+        data: {
+          ...taskDto,
+          order: (maxOrderAgregation._max.order || 0) + 1,
+          account: { connect: { id: accountId } },
+        },
+      });
     });
   }
 
-  createMany(accountId: Task["accountId"], tasks: Omit<Prisma.TaskCreateManyInput, "accountId">[]) {
-    return prisma.task.createMany({
-      data: tasks.map((task) => ({
-        ...task,
-        accountId: accountId,
-      })),
+  async createMany(
+    accountId: Task["accountId"],
+    tasks: Omit<Prisma.TaskCreateManyInput, "accountId">[],
+  ) {
+    return prisma.$transaction(async (prisma) => {
+      const maxOrderAgregation = await prisma.task.aggregate({
+        where: { accountId },
+        _max: { order: true },
+      });
+
+      return prisma.task.createMany({
+        data: tasks.map((task, index) => ({
+          ...task,
+          order: (maxOrderAgregation._max.order || 0) + 1 + index,
+          accountId: accountId,
+        })),
+      });
     });
   }
 
@@ -36,7 +55,23 @@ class Tasks {
   }
 
   delete(taskId: Task["id"]) {
-    return prisma.task.delete({ where: { id: taskId } });
+    return prisma.$transaction(async (prisma) => {
+      const task = await prisma.task.findUnique({ where: { id: taskId } });
+      if (!task) {
+        return;
+      }
+
+      await Promise.all([
+        prisma.task.delete({ where: { id: taskId } }),
+        prisma.task.updateMany({
+          where: {
+            accountId: task.accountId,
+            order: { gt: task.order },
+          },
+          data: { order: { decrement: 1 } },
+        }),
+      ]);
+    });
   }
 }
 

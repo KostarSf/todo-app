@@ -37,12 +37,13 @@ async function performClientIntents(request: Request): Promise<TypedResponse<Tas
 
   if (intent === INTENTS.createTask) {
     const text = formData.get("text")?.toString().trim();
+    const id = formData.get("id")?.toString();
 
     if (typeof text !== "string" || !text) {
       return json({ error: "Вы не заполнили поле" }, { status: 400 });
     }
 
-    taskManager.addTask(text).save();
+    taskManager.addTask({ id, text }).save();
     return json({});
   }
 

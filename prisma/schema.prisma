@@ -15,7 +15,9 @@ model Task {
   order Float   @default(0)
 
   accountId String
-  account   Account @relation(fields: [accountId], references: [id])
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([order, accountId])
 }
 
 model Account {
@@ -31,5 +33,5 @@ model Password {
   hash      String
   accountId String @unique
 
-  account Account @relation(fields: [accountId], references: [id])
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 }
