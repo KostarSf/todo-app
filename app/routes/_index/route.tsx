@@ -36,10 +36,12 @@ export default function Index() {
 function Layout({ children }: { children?: React.ReactNode }) {
   return (
     <div className="flex min-h-svh flex-col space-y-8">
-      <header className="flex items-center justify-between border-b border-slate-100 bg-white px-4 py-2">
-        <h1 className="select-none font-mono text-2xl font-bold text-indigo-400">Todoerr</h1>
+      <header className="border-b border-slate-100 bg-white transition dark:border-slate-800 dark:bg-slate-950">
+        <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-4 py-2">
+          <h1 className="select-none font-mono text-2xl font-bold text-indigo-400">Todoerr</h1>
 
-        <AuthButton />
+          <AuthButton />
+        </div>
       </header>
 
       <main className="mx-auto flex w-full max-w-screen-sm flex-1 flex-col gap-4 px-4 md:justify-center">
@@ -47,7 +49,9 @@ function Layout({ children }: { children?: React.ReactNode }) {
       </main>
 
       <footer>
-        <p className="p-2 text-center text-sm text-slate-500">© 2024 Максим Песков</p>
+        <p className="p-2 text-center text-sm text-slate-500 transition dark:text-slate-600">
+          © 2024 Максим Песков
+        </p>
       </footer>
     </div>
   );

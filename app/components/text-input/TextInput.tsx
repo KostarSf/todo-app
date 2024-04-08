@@ -13,7 +13,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
         <input
           ref={ref}
           {...props}
-          className="w-full rounded-md border border-slate-200 bg-transparent px-4 py-2 text-lg text-slate-800 outline-none ring-indigo-400 transition placeholder:text-slate-400 placeholder:transition hover:border-indigo-300 focus:border-indigo-400 focus:ring focus:placeholder:text-slate-300 focus:hover:border-indigo-400"
+          className="w-full rounded-md border border-slate-200 bg-transparent px-4 py-2 text-lg text-slate-800 outline-none ring-indigo-400 transition placeholder:text-slate-400 placeholder:transition hover:border-indigo-300 focus:border-indigo-400 focus:ring focus:placeholder:text-slate-300 focus:hover:border-indigo-400 dark:border-slate-800 dark:bg-slate-900/30 dark:text-slate-50 dark:ring-indigo-600 dark:hover:border-indigo-600 dark:focus:border-indigo-600 dark:focus:hover:border-indigo-600"
         />
         {error && <p className="px-4 py-2 text-sm text-rose-500">{error}</p>}
 

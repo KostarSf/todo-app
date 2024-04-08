@@ -14,7 +14,7 @@ export function TaskItem({ task, clientActions }: TaskItemProps) {
   const action = clientActions ? "?index&client=true" : undefined;
 
   return (
-    <li className="group/item overflow-clip bg-white px-4 transition hover:bg-slate-50">
+    <li className="group/item overflow-clip px-4 transition hover:bg-slate-50 dark:hover:bg-slate-900">
       <Form className="flex items-center gap-4" method="POST" action={action} navigate={false}>
         <input type="hidden" name="id" value={task.id} />
         <input type="hidden" name="done" value={String(!task.done)} />
@@ -22,7 +22,7 @@ export function TaskItem({ task, clientActions }: TaskItemProps) {
         <input type="hidden" name="order" value={task.order} />
 
         <button
-          className="grid h-6 w-6 place-items-center rounded-md border border-slate-300 bg-white transition hover:border-indigo-300"
+          className="grid h-6 w-6 place-items-center rounded-md border border-slate-300 bg-white ring-indigo-300 transition hover:border-indigo-300 focus:outline-none focus:ring-2 dark:border-slate-700 dark:bg-slate-800/50 dark:ring-indigo-600 dark:hover:border-indigo-600 dark:focus:border-indigo-600"
           type="submit"
           name="intent"
           value={INTENTS.updateTask}
@@ -38,16 +38,21 @@ export function TaskItem({ task, clientActions }: TaskItemProps) {
 
         <p
           className={clsx({
-            "flex-1 text-lg font-medium transition": true,
-            "text-green-600 line-through": task.done,
-            "text-slate-700": !task.done,
+            "flex-1 text-lg font-semibold transition": true,
+            "text-green-600 line-through dark:text-green-400": task.done,
+            "text-slate-700 dark:text-slate-300": !task.done,
           })}
         >
           {task.text}
         </p>
 
-        <button type="submit" name="intent" value={INTENTS.deleteTask}>
-          <TrashIcon className="w-10 translate-y-5 p-2 text-transparent transition group-hover/item:translate-y-0 group-hover/item:text-slate-400 group-hover/item:hover:text-rose-600" />
+        <button
+          className="group/icon my-1 rounded-md ring-indigo-300 transition focus:outline-none focus:ring dark:ring-indigo-600"
+          type="submit"
+          name="intent"
+          value={INTENTS.deleteTask}
+        >
+          <TrashIcon className="w-10 translate-y-5 p-2 text-transparent transition group-hover/item:translate-y-0 group-hover/item:text-slate-400 group-hover/item:hover:text-rose-600 group-focus-visible/icon:translate-y-0 group-focus-visible/icon:text-rose-600 dark:group-hover/item:text-slate-600" />
         </button>
       </Form>
     </li>

@@ -28,11 +28,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         type={type || "button"}
         className={clsx({
-          "flex items-center justify-center gap-2 rounded-md border border-transparent font-medium text-indigo-400 ring-indigo-400 transition hover:text-indigo-500 focus:outline-none focus-visible:ring":
+          "flex items-center justify-center gap-2 rounded-md border border-transparent font-semibold text-indigo-400 ring-indigo-400 transition hover:text-indigo-500 focus:outline-none focus-visible:ring dark:text-indigo-400 dark:ring-indigo-600 dark:hover:text-indigo-300":
             true,
           "w-full": fullWidth,
-          "bg-indigo-50 hover:bg-indigo-100": variant === "primary",
-          "hover:bg-indigo-100": variant === "highlight",
+          "bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950 dark:hover:bg-indigo-900":
+            variant === "primary",
+          "hover:bg-indigo-100 dark:hover:bg-indigo-950": variant === "highlight",
           "px-4 py-2": size === "normal",
           "px-3 py-1 text-sm": size === "small",
         })}

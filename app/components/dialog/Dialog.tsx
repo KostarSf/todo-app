@@ -20,7 +20,7 @@ export function Dialog({ show, onClose, title, children }: DialogProps) {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-slate-700/25" />
+          <div className="fixed inset-0 bg-slate-700/25 transition dark:bg-slate-950/75" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -34,11 +34,11 @@ export function Dialog({ show, onClose, title, children }: DialogProps) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <HDialog.Panel className="w-full max-w-md transform overflow-hidden rounded-lg border border-slate-100 bg-white p-6 text-left align-middle shadow-xl shadow-slate-500/25 transition-all">
+              <HDialog.Panel className="w-full max-w-md transform overflow-hidden rounded-lg border border-slate-100 bg-white p-6 text-left align-middle shadow-xl shadow-slate-500/25 transition dark:border-slate-900 dark:bg-slate-950 dark:shadow-slate-950">
                 {title && (
                   <HDialog.Title
                     as="h3"
-                    className="text-center text-xl font-medium leading-6 text-slate-800"
+                    className="text-center text-xl font-medium leading-6 text-slate-800 transition dark:text-slate-200"
                   >
                     {title}
                   </HDialog.Title>
