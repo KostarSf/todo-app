@@ -6,20 +6,34 @@ import { TasksLoaderData } from "./types";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Список задач" },
+    { title: "Todoerr" },
     { name: "description", content: "Еще одно приложение для ведения списка задач!" },
   ];
 };
 
 export { clientAction, clientLoader } from "./client";
+export { action, loader } from "./server";
 
 export function HydrateFallback() {
-  return <p>Загрузка...</p>;
+  return (
+    <Layout>
+      <span className="spinner mx-auto animate-spin"></span>
+    </Layout>
+  );
 }
 
 export default function Index() {
-  const tasks = useLoaderData<TasksLoaderData>();
+  const { tasks } = useLoaderData<TasksLoaderData>();
 
+  return (
+    <Layout>
+      <NewTaskForm />
+      <TasksList tasks={tasks} />
+    </Layout>
+  );
+}
+
+function Layout({ children }: { children?: React.ReactNode }) {
   return (
     <div className="flex min-h-svh flex-col space-y-8">
       <header className="flex items-center justify-between border-b border-slate-100 bg-white px-4 py-2">
@@ -29,8 +43,7 @@ export default function Index() {
       </header>
 
       <main className="mx-auto flex w-full max-w-screen-sm flex-1 flex-col gap-4 px-2 md:justify-center">
-        <NewTaskForm />
-        <TasksList tasks={tasks} />
+        {children}
       </main>
 
       <footer>

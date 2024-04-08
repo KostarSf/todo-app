@@ -46,6 +46,11 @@ export class TasksClientManager {
     return this;
   }
 
+  clearTasks() {
+    this.tasks = [];
+    return this;
+  }
+
   save() {
     this.tasks = this.tasks.sort((a, b) => a.order - b.order);
 

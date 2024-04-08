@@ -1,40 +1,20 @@
 import { Task } from "@prisma/client";
-import { useFetcher } from "@remix-run/react";
 
 import { Box } from "~/components";
-import { INTENTS } from "~/routes/_index/types";
 import { TaskItem } from "..";
+import { useSyncLocalTasksOnLogin, useTasksActions } from "./hooks";
 
 type TasksListProps = { tasks: Task[] };
 export function TasksList({ tasks }: TasksListProps) {
-  const fetcher = useFetcher();
-
-  const updateTaskHandle = (task: Task) => {
-    const formData = new FormData();
-    for (const [key, value] of Object.entries(task)) {
-      formData.append(key, value.toString());
-    }
-    formData.append("intent", INTENTS.updateTask);
-    fetcher.submit(formData, { method: "POST", navigate: false });
-  };
-
-  const deleteTaskHandle = (task: Task) => {
-    const formData = new FormData();
-    formData.append("id", task.id);
-    formData.append("intent", INTENTS.deleteTask);
-    fetcher.submit(formData, { method: "POST", navigate: false });
-  };
+  const { updateTask, deleteTask } = useTasksActions();
+  const error = useSyncLocalTasksOnLogin();
 
   return tasks.length > 0 ? (
     <Box className="overflow-clip py-2" border>
+      {error && <p className="p-3 text-center text-rose-500">{error}</p>}
       <ul>
         {tasks.map((task) => (
-          <TaskItem
-            key={task.id}
-            task={task}
-            onUpdate={updateTaskHandle}
-            onDelete={deleteTaskHandle}
-          />
+          <TaskItem key={task.id} task={task} onUpdate={updateTask} onDelete={deleteTask} />
         ))}
       </ul>
     </Box>

@@ -4,6 +4,10 @@ import crypto from "node:crypto";
 import { prisma } from "~/db.server";
 
 class Accounts {
+  find(id: Account["id"]): Promise<Account | null> {
+    return prisma.account.findUnique({ where: { id } });
+  }
+
   async exists(email: string): Promise<boolean> {
     const account = await prisma.account.findUnique({
       where: { email },
@@ -13,7 +17,7 @@ class Accounts {
     return Boolean(account);
   }
 
-  async create(email: string, password: string): Promise<Account> {
+  create(email: string, password: string): Promise<Account> {
     const salt = crypto.randomBytes(16).toString("hex");
     const hash = this.generateHash(password, salt);
 

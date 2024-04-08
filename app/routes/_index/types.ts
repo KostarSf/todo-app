@@ -1,6 +1,6 @@
 import { Task } from "@prisma/client";
 
-export type TasksLoaderData = Task[];
+export type TasksLoaderData = { tasks: Task[]; clientOnly: boolean };
 export type TasksActionData = { error?: string };
 
 export const INTENTS = {

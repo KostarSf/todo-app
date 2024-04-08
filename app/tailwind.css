@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .spinner {
+    @apply w-12 h-12 border-4 border-indigo-100 border-b-indigo-500;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+  }
+}

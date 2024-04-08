@@ -1,17 +1,35 @@
-import { ClientActionFunctionArgs, json } from "@remix-run/react";
+import { ClientActionFunctionArgs, ClientLoaderFunctionArgs, json } from "@remix-run/react";
 import { TypedResponse } from "@vercel/remix";
 
 import { TasksClientManager } from "~/models/tasks.client-manager";
 import { INTENTS, TasksActionData, TasksLoaderData } from "./types";
 
-export const clientLoader = (): TasksLoaderData => {
-  return new TasksClientManager().tasks;
+export const clientLoader = async ({
+  serverLoader,
+}: ClientLoaderFunctionArgs): Promise<TasksLoaderData> => {
+  const data = await serverLoader<TasksLoaderData>();
+  if (data.clientOnly) {
+    return { ...data, tasks: new TasksClientManager().tasks };
+  }
+
+  return data;
 };
 clientLoader.hydrate = true;
 
 export const clientAction = async ({
   request,
+  serverAction,
 }: ClientActionFunctionArgs): Promise<TypedResponse<TasksActionData>> => {
+  const isClient = new URL(request.url).searchParams.has("client");
+  if (isClient) {
+    return performClientIntents(request);
+  }
+
+  const data = await serverAction<TasksActionData>();
+  return json(data, { status: data.error ? 400 : 200 });
+};
+
+async function performClientIntents(request: Request): Promise<TypedResponse<TasksActionData>> {
   const formData = await request.formData();
   const intent = formData.get("intent");
 
@@ -59,4 +77,4 @@ export const clientAction = async ({
   }
 
   return json({ error: "Неизвестный intent" }, { status: 400 });
-};
+}
