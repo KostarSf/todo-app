@@ -1,4 +1,5 @@
 import { LoaderFunctionArgs, createCookie, redirect } from "@vercel/remix";
+import accounts from "./models/accounts";
 
 let secret = process.env.COOKIE_SECRET || "default";
 if (secret === "default") {
@@ -55,4 +56,18 @@ export async function redirectIfLoggedInLoader({ request }: LoaderFunctionArgs) 
     throw redirect("/");
   }
   return null;
+}
+
+export async function getOptionalUser(request: Request) {
+  const userId = await getAuthFromRequest(request);
+  if (!userId) {
+    return null;
+  }
+
+  const user = await accounts.find(userId);
+  if (!user) {
+    throw clearAuth("/");
+  }
+
+  return user;
 }
